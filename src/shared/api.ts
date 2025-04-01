@@ -19,6 +19,7 @@ export type ApiProvider =
 	| "asksage"
 	| "xai"
 	| "sambanova"
+	| "raycast-ai"
 
 export interface ApiHandlerOptions {
 	apiModelId?: string
@@ -71,6 +72,7 @@ export interface ApiHandlerOptions {
 	xaiApiKey?: string
 	thinkingBudgetTokens?: number
 	sambanovaApiKey?: string
+	raycastModelId?: string
 }
 
 export type ApiConfiguration = ApiHandlerOptions & {
@@ -1425,5 +1427,56 @@ export const sambanovaModels = {
 		supportsPromptCache: false,
 		inputPrice: 1.0,
 		outputPrice: 1.5,
+	},
+} as const satisfies Record<string, ModelInfo>
+
+// RaycastAI Models
+export type RaycastAIModelId = string
+export const raycastAIDefaultModelId: RaycastAIModelId = "openai-gpt-4o"
+export const raycastAIModels = {
+	"openai-gpt-4o": {
+		maxTokens: 4096,
+		contextWindow: 128_000,
+		supportsImages: false,
+		supportsComputerUse: false,
+		supportsPromptCache: false,
+		inputPrice: 5.0,
+		outputPrice: 15.0,
+	},
+	"openai-gpt-4-turbo": {
+		maxTokens: 4096,
+		contextWindow: 128_000,
+		supportsImages: false,
+		supportsComputerUse: false,
+		supportsPromptCache: false,
+		inputPrice: 10.0,
+		outputPrice: 30.0,
+	},
+	"anthropic-claude-3-opus": {
+		maxTokens: 4096,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsComputerUse: false,
+		supportsPromptCache: false,
+		inputPrice: 15.0,
+		outputPrice: 75.0,
+	},
+	"anthropic-claude-3-sonnet": {
+		maxTokens: 4096,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsComputerUse: false,
+		supportsPromptCache: false,
+		inputPrice: 3.0,
+		outputPrice: 15.0,
+	},
+	"anthropic-claude-3-haiku": {
+		maxTokens: 4096,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsComputerUse: false,
+		supportsPromptCache: false,
+		inputPrice: 0.25,
+		outputPrice: 1.25,
 	},
 } as const satisfies Record<string, ModelInfo>

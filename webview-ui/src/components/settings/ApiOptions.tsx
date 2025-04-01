@@ -45,6 +45,8 @@ import {
 	xaiModels,
 	sambanovaModels,
 	sambanovaDefaultModelId,
+	raycastAIDefaultModelId,
+	raycastAIModels,
 } from "../../../../src/shared/api"
 import { ExtensionMessage } from "../../../../src/shared/ExtensionMessage"
 import { useExtensionState } from "../../context/ExtensionStateContext"
@@ -212,6 +214,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 					<VSCodeOption value="asksage">AskSage</VSCodeOption>
 					<VSCodeOption value="xai">X AI</VSCodeOption>
 					<VSCodeOption value="sambanova">SambaNova</VSCodeOption>
+					<VSCodeOption value="raycast-ai">Raycast AI</VSCodeOption>
 				</VSCodeDropdown>
 			</DropdownContainer>
 
@@ -1359,6 +1362,39 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 				</div>
 			)}
 
+			{selectedProvider === "raycast-ai" && (
+				<div>
+					<VSCodeRadioGroup
+						value={apiConfiguration?.raycastModelId || raycastAIDefaultModelId}
+						onChange={(e) => {
+							const value = (e.target as HTMLInputElement)?.value
+							if (value) {
+								handleInputChange("raycastModelId")({
+									target: { value },
+								})
+							}
+						}}>
+						{Object.entries(raycastAIModels).map(([modelId, modelInfo]) => (
+							<VSCodeRadio key={modelId} value={modelId} checked={apiConfiguration?.raycastModelId === modelId}>
+								{modelId} (Context: {modelInfo.contextWindow.toLocaleString()} tokens)
+							</VSCodeRadio>
+						))}
+					</VSCodeRadioGroup>
+					<p
+						style={{
+							fontSize: "12px",
+							marginTop: "5px",
+							color: "var(--vscode-descriptionForeground)",
+						}}>
+						Raycast AIを使用するには、Raycastアプリケーションがインストールされている必要があります。
+						<VSCodeLink href="https://raycast.com" style={{ display: "inline", fontSize: "inherit" }}>
+							Raycastのウェブサイト
+						</VSCodeLink>
+						からダウンロードできます。
+					</p>
+				</div>
+			)}
+
 			{apiErrorMessage && (
 				<p
 					style={{
@@ -1723,6 +1759,12 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration): 
 			return getProviderData(xaiModels, xaiDefaultModelId)
 		case "sambanova":
 			return getProviderData(sambanovaModels, sambanovaDefaultModelId)
+		case "raycast-ai":
+			return {
+				selectedProvider: provider,
+				selectedModelId: apiConfiguration?.raycastModelId || raycastAIDefaultModelId,
+				selectedModelInfo: openAiModelInfoSaneDefaults,
+			}
 		default:
 			return getProviderData(anthropicModels, anthropicDefaultModelId)
 	}
